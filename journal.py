@@ -14,6 +14,7 @@ from flask import url_for
 from flask import redirect
 from flask import session
 from passlib.hash import pbkdf2_sha256
+import markdown
 
 
 
@@ -37,9 +38,26 @@ DB_ENTRIES_LIST = """
 SELECT id, title, text, created FROM entries ORDER BY created DESC
 """
 
+DB_ENTRY_LIST = """
+SELECT id, title, text, created FROM entries WHERE entries.id = %s
+"""
 
+DB_DELETE_ENTRY_LIST = """
+DELETE FROM entries WHERE entries.id = %s
+"""
 
 app = Flask(__name__)
+
+
+def get_entry(id):
+    """return a single entry based on id"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_ENTRY_LIST, [id])
+    keys = ('id', 'title', 'text', 'created')
+    row = cur.fetchone()
+    cur.execute(DB_DELETE_ENTRY_LIST, [id])
+    return dict(zip(keys, row))    # we use fetchone instead of fetch all
 
 def get_all_entries():
     """return a list of all entries as dicts"""
@@ -55,12 +73,36 @@ def write_entry(title, text):
     con = get_database_connection()
     cur = con.cursor()
     now = datetime.datetime.utcnow()
+    title = markdown.markdown(title)
+    text = markdown.markdown(text)
     cur.execute(DB_ENTRY_INSERT, [title, text, now])
+
+
+@app.route('/edit/<id>', methods=['GET', 'POST'])
+def edit_entry(id):
+    """return"""
+    entry = get_entry(id)
+    
+    return render_template('edit_form.html', entry=entry)
+
+
+
+
+
+
+
+
+
+
+
+@app.route('/show_add_entry')
+def show_add_entry():
+    return render_template('add_entry.html')
 
 @app.route('/')
 def show_entries():
     entries = get_all_entries()
-    return render_template('list_entries.html', entries=entries)
+    return render_template('list_entries.html', entries=entries) # we can itteratively entry['text'] = markdown.markdonw(entry['text'],
 
 @app.route('/add', methods=['POST'])
 def add_entry():
@@ -134,6 +176,7 @@ def teardown_request(exception):
         else:
             db.commit()
         db.close()
+        g.db = None # get rid of db from the g namespace
 
 def do_login(username='', passwd=''):
     if username != app.config['ADMIN_USERNAME']:
