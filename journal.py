@@ -59,6 +59,19 @@ def get_entry(id):
     cur.execute(DB_DELETE_ENTRY_LIST, [id])
     return dict(zip(keys, row))    # we use fetchone instead of fetch all
 
+
+def delete_entry_db(id):
+    """deletes a single entry based on id"""
+    con = get_database_connection()
+    cur = con.cursor()
+    # cur.execute(DB_ENTRY_LIST, [id])
+    # keys = ('id', 'title', 'text', 'created')
+    # row = cur.fetchone()
+    cur.execute(DB_DELETE_ENTRY_LIST, [id])
+    # return dict(zip(keys, row))
+
+
+
 def get_all_entries():
     """return a list of all entries as dicts"""
     con = get_database_connection()
@@ -81,16 +94,29 @@ def write_entry(title, text):
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 def edit_entry(id):
     """return"""
-    entry = get_entry(id)
-    entry['text'] = markdown.markdown(entry['text'])
-    entry['title'] = markdown.markdown(entry['title'])
+    # Check if session is logged in then serve
+    if session['logged_in']:
+        entry = get_entry(id)
+        entry['text'] = markdown.markdown(entry['text'])
+        entry['title'] = markdown.markdown(entry['title'])
 
-    return render_template('edit_form.html', entry=entry)
+        return render_template('edit_form.html', entry=entry)
+    else:
+        abort(500)
 
-
-
-
-
+@app.route('/delete/<id>', methods=['GET', 'POST'])
+def delete_entry(id):
+    """return"""
+    # import pdb; pdb.set_trace()
+    # Check if session is logged in then serve
+    if session['logged_in']:
+        delete_entry_db(id)
+        # entry['text'] = markdown.markdown(entry['text'])
+        # entry['title'] = markdown.markdown(entry['title'])
+        return ''
+        # return render_template('edit_form.html', entry=entry)
+    else:
+        abort(500)
 
 
 
