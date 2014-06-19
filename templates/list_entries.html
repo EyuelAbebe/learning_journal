@@ -3,7 +3,7 @@
   <h2>Entries</h2>
   {% for entry in entries %}
   <article class="entry" id="entry={{entry.id}}">
-    {{ entry.title }}
+    {{ entry.title|safe }}
     <p class="dateline">{{ entry.created.strftime('%b. %d, %Y') }}
     <div class="entry_body">
       {{ entry.text|safe }}

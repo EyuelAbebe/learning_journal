@@ -82,7 +82,9 @@ def write_entry(title, text):
 def edit_entry(id):
     """return"""
     entry = get_entry(id)
-    
+    entry['text'] = markdown.markdown(entry['text'])
+    entry['title'] = markdown.markdown(entry['title'])
+
     return render_template('edit_form.html', entry=entry)
 
 
