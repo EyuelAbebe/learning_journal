@@ -16,7 +16,8 @@
               </form>
               <form action="{{ url_for('delete_entry', id=entry.id )  }}" method="POST" class="delete_entry" id="{{entry.id}}">
                 <input type="submit" value="DELETE" name="submit" />
-              </form>
+       		<a href="https://twitter.com/share" class="twitter-share-button" data-lang="en">Tweet</a>	
+	      </form>
           </div>
       {% endif  %}
   </article>
