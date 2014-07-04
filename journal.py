@@ -134,7 +134,7 @@ def teardown_request(exception):
         else:
             db.commit()
         db.close()
-        
+
 
 def do_login(username='', passwd=''):
     if username != app.config['ADMIN_USERNAME']:
