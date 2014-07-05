@@ -65,12 +65,7 @@ def delete_entry_db(id):
     """deletes a single entry based on id"""
     con = get_database_connection()
     cur = con.cursor()
-    # cur.execute(DB_ENTRY_LIST, [id])
-    # keys = ('id', 'title', 'text', 'created')
-    # row = cur.fetchone()
     cur.execute(DB_DELETE_ENTRY_LIST, [id])
-    # return dict(zip(keys, row))
-
 
 
 def get_all_entries():
@@ -82,24 +77,20 @@ def get_all_entries():
     return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 def write_entry(title, text):
+    """writes an entry(title, text) to db."""
     if not title or not text:
         raise ValueError("Title and text required for writing an entry")
     con = get_database_connection()
     cur = con.cursor()
     now = datetime.datetime.utcnow()
-    title = markdown.markdown(title)
-    text = markdown.markdown(text)
     cur.execute(DB_ENTRY_INSERT, [title, text, now])
 
 
 @app.route('/edit/<id>', methods=['GET', 'POST'])
 def edit_entry(id):
-    """return"""
-    # Check if session is logged in then serve
+    """return a single entry from the db, using id"""
     if session['logged_in']:
         entry = get_entry(id)
-        entry['text'] = markdown.markdown(entry['text'])
-        entry['title'] = markdown.markdown(entry['title'])
 
         return render_template('edit_form.html', entry=entry)
     else:
@@ -107,34 +98,36 @@ def edit_entry(id):
 
 @app.route('/delete/<id>', methods=['GET', 'POST'])
 def delete_entry(id):
-    """return"""
-    # import pdb; pdb.set_trace()
-    # Check if session is logged in then serve
+    """calls delete_entry_db, to delete an entry from the db."""
     if session['logged_in']:
         delete_entry_db(id)
-        # entry['text'] = markdown.markdown(entry['text'])
-        # entry['title'] = markdown.markdown(entry['title'])
         return ''
-        # return render_template('edit_form.html', entry=entry)
     else:
         abort(500)
 
 
 
 
-
-
 @app.route('/show_add_entry')
 def show_add_entry():
+    """returns a form for adding an entry"""
     return render_template('add_entry.html')
 
 @app.route('/')
 def show_entries():
+    """shows all entries in the db."""
     entries = get_all_entries()
+    print entries
+    if len(entries) > 0:
+        for entry in entries:
+            entry['title'] = markdown.markdown(entry['title'])
+            entry['text'] = markdown.markdown(entry['text'])
+
     return render_template('list_entries.html', entries=entries) # we can itteratively entry['text'] = markdown.markdonw(entry['text'],
 
 @app.route('/add', methods=['POST'])
 def add_entry():
+    """calls write_entry to write a single entry to the db."""
     try:
         write_entry(request.form['title'], request.form['text'])
     	twitter_tweet = twitter_api.request('statuses/update', {'status': request.form['title']})
@@ -146,6 +139,7 @@ def add_entry():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """performs login check."""
     error = None
     if request.method == 'POST':
         try:
@@ -159,6 +153,7 @@ def login():
 
 @app.route('/logout')
 def logout():
+    """logs out a logged in user."""
     session.pop('logged_in', None)
     return redirect(url_for('show_entries'))
 
@@ -192,6 +187,7 @@ def init_db():
         db.commit()
 
 def get_database_connection():
+    """creates a db connection."""
     db = getattr(g, 'db', None)
     if db is None:
         g.db = db = connect_db()
@@ -199,6 +195,7 @@ def get_database_connection():
 
 @app.teardown_request
 def teardown_request(exception):
+    """uses flask g object to close an open db connection."""
     db = getattr(g, 'db', None)
     if db is not None:
         if exception and isinstance(exception, psycopg2.Error):
@@ -209,6 +206,7 @@ def teardown_request(exception):
         g.db = None # get rid of db from the g namespace
 
 def do_login(username='', passwd=''):
+    """performs user login authentication"""
     if username != app.config['ADMIN_USERNAME']:
         raise ValueError
     if not pbkdf2_sha256.verify(passwd, app.config['ADMIN_PASSWORD']):
