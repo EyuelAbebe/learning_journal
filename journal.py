@@ -17,6 +17,10 @@ from passlib.hash import pbkdf2_sha256
 from TwitterAPI import TwitterAPI
 import markdown
 
+from pygments import highlight
+from pygments.lexers import PythonLexer
+from pygments.formatters import HtmlFormatter
+
 
 twitter_api = TwitterAPI('ijzWFhaG2UtO92A6tVskUy9Qt', 'hSrMEpYCBwIm1QTflr2kTAEh2z7h6vNMqNLKTMWtxWp0YTwUDo', '2579503044-xER6bBw95UstPV88QWGxsL9JlOoUxEE1sIKx5vv', 'W4vdT8c0Fwn8dF07CoxdcrL4SDbvgnHRcudT0m6nZ0nM2')
 
@@ -106,8 +110,6 @@ def delete_entry(id):
         abort(500)
 
 
-
-
 @app.route('/show_add_entry')
 def show_add_entry():
     """returns a form for adding an entry"""
@@ -117,11 +119,13 @@ def show_add_entry():
 def show_entries():
     """shows all entries in the db."""
     entries = get_all_entries()
-    print entries
     if len(entries) > 0:
         for entry in entries:
             entry['title'] = markdown.markdown(entry['title'])
-            entry['text'] = markdown.markdown(entry['text'])
+            text = markdown.markdown(entry['text'], extensions=['codehilite'])
+            entry['text'] = text
+
+    print entries
 
     return render_template('list_entries.html', entries=entries) # we can itteratively entry['text'] = markdown.markdonw(entry['text'],
 
