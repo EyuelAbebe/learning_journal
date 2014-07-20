@@ -1,25 +1,14 @@
 # -*- coding: utf-8 -*-
 
-
-from flask import Flask
-import os
-import psycopg2
+import os, datetime, psycopg2, markdown
 from contextlib import closing
-from flask import g
-import datetime
-from flask import render_template
-from flask import abort
-from flask import request
-from flask import url_for
-from flask import redirect
-from flask import session
+from flask import render_template, abort, request, url_for, redirect, session, g, Flask
 from passlib.hash import pbkdf2_sha256
 from TwitterAPI import TwitterAPI
-import markdown
-
 from pygments import highlight
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
+import credentials
 
 
 twitter_api = TwitterAPI('ijzWFhaG2UtO92A6tVskUy9Qt', 'hSrMEpYCBwIm1QTflr2kTAEh2z7h6vNMqNLKTMWtxWp0YTwUDo', '2579503044-xER6bBw95UstPV88QWGxsL9JlOoUxEE1sIKx5vv', 'W4vdT8c0Fwn8dF07CoxdcrL4SDbvgnHRcudT0m6nZ0nM2')
@@ -95,7 +84,6 @@ def edit_entry(id):
     """return a single entry from the db, using id"""
     if session['logged_in']:
         entry = get_entry(id)
-
         return render_template('edit_form.html', entry=entry)
     else:
         abort(500)
@@ -122,7 +110,7 @@ def show_entries():
     if len(entries) > 0:
         for entry in entries:
             entry['title'] = markdown.markdown(entry['title'])
-            text = markdown.markdown(entry['text'], extensions=['codehilite'])
+            text = markdown.markdown(entry['text'], extensions=['codehilite(linenums=False)'])
             entry['text'] = text
 
     print entries
