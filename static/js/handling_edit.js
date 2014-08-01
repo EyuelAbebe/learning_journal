@@ -30,3 +30,10 @@ $('document').ready(function(){
           });
     });
 })
+
+
+$(function(){
+  $('.edit_entry').click(function(){
+
+    })
+})

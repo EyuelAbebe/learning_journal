@@ -6,43 +6,39 @@
     <!--[if lt IE 9]>
     <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
-      <script src="http://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
       <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-      <script src='/static/handling_edit.js' type="text/javascript"></script>
-     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
-      <link href="{{ url_for('static', filename='style_pygment.css') }}" rel="stylesheet" type="text/css">
+      <script src='/static/js/handling_edit.js' type="text/javascript"></script>
+      <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
+      <link href="{{ url_for('static', filename='pygment.css') }}" rel="stylesheet" type="text/css">
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
   </head>
   <body>
-    <header>
-       <aside id="user-controls">
-        <ul>
+        <ul class="nav nav-pills nav-head" >
+         <li class=""><a href="/"> Eyuel's Python Journal</a></li>
         {% if not session.logged_in %}
-          <li><a href="{{ url_for('login') }}">log in</a></li>
+          <li class="pull-right"><a href="{{ url_for('login') }}">Log In</a></li>
         {% else %}
-          <li><a href="{{ url_for('logout') }}">log out</a></li>
+          <li class="pull-right"><a href="{{ url_for('logout') }}">Log Out</a></li>
+          <li class="pull-right"><a href="{{ url_for('show_add_entry') }}"> Add Entry </a></li>
+
         {% endif %}
         </ul>
-      </aside>
-      <nav>
-        <ul>
-          <li><a href="/">Read</a></li>
-            {% if session.logged_in %}
-                <li><a href="{{ url_for('show_add_entry') }}">Add Entry</a></li>
-            {% endif %}
-        </ul>
-      </nav>
-    </header>
     <main>
-      <h1>My Python Journal</h1>
       <section id="content">
       {% block body %}
 
       {% endblock %}
       </section>
     </main>
-    <footer>
+    <div class="navbar-default navbar-fixed-bottom">
+     <hr>
       <p>Created in the Code Fellows Python Dev Accelerator</p>
-    </footer>
+    </div>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
   </body>
 </html>

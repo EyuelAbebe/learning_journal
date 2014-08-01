@@ -110,7 +110,7 @@ def show_entries():
     if len(entries) > 0:
         for entry in entries:
             entry['title'] = markdown.markdown(entry['title'])
-            text = markdown.markdown(entry['text'], extensions=['codehilite(linenums=False)'])
+            text = markdown.markdown(entry['text'], extensions=['codehilite(linenums=True)'])
             entry['text'] = text
 
     print entries
