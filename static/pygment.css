@@ -1,5 +1,5 @@
 
-.codehilite{background: #2d2d2d;padding:5px 5px;border-radius:2px;}
+.codehilite{background: #2d2d2d;padding:5px 5px;border-radius:2px;width: 30%}
 .codehilitetable{width:20%;}
 pre span, code{font-family:Ubuntu;font-size: 12px;}
 .k, .nb, .o{font-weight: bold;}
