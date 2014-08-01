@@ -1,6 +1,7 @@
-.codehilite{background: #2d2d2d;padding:10px 5px;border-radius:4px;}
-.codehilitetable{width:100%;}
-pre span, code{font-family:Ubuntu;font-size: 14px;}
+
+.codehilite{background: #2d2d2d;padding:5px 5px;border-radius:2px;}
+.codehilitetable{width:20%;}
+pre span, code{font-family:Ubuntu;font-size: 12px;}
 .k, .nb, .o{font-weight: bold;}
 .hll { background-color: #49483e; }
 .c { color: #75715e; } /* Comment */
