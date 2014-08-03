@@ -5,10 +5,10 @@ from contextlib import closing
 from flask import render_template, abort, request, url_for, redirect, session, g, Flask
 from passlib.hash import pbkdf2_sha256
 from TwitterAPI import TwitterAPI
-# from pygments import highlight
-# from pygments.lexers import PythonLexer
-# from pygments.formatters import HtmlFormatter
-# import credentials
+from pygments import highlight
+from pygments.lexers import PythonLexer
+from pygments.formatters import HtmlFormatter
+import credentials
 
 
 twitter_api = TwitterAPI('ijzWFhaG2UtO92A6tVskUy9Qt', 'hSrMEpYCBwIm1QTflr2kTAEh2z7h6vNMqNLKTMWtxWp0YTwUDo', '2579503044-xER6bBw95UstPV88QWGxsL9JlOoUxEE1sIKx5vv', 'W4vdT8c0Fwn8dF07CoxdcrL4SDbvgnHRcudT0m6nZ0nM2')
